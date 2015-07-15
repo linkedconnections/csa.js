@@ -1,0 +1,6 @@
+{
+  "@context" : {
+    "gtfs" : "http://vocab.gtfs.org/terms#",
+    "st" : "http://semweb.mmlab.be/ns/stoptimes#"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "csa",
+  "version": "0.0.1",
+  "description": "Route Planner on top of data published using Connections",
+  "main": "lib/SingleResultScanner.js",
+  "keywords": [
+    "journey planning",
+    "route planning"
+  ],
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Pieter Colpaert",
+  "license": "MIT",
+  "dependencies": {
+    "jsonld": "~0.3.19"
+  },
+  "devDependencies": {
+    "async": "^1.2.1",
+    "should": "^6.0.3"
+  }
+}
