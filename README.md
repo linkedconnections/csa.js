@@ -14,6 +14,10 @@ npm install csa
 And include it in your nodejs application
 ```javascript
 var Planner = require('csa');
+var queryStream = new Planner({departureStop: "...", arrivalStop: "...",departureTime:new Date()});
+connectionsReadStream.pipe(queryStream).on("data", function (result) {
+    console.log("Path found:",result);
+});
 ```
 
 Using browserify, you can also build this for the browser. Instructions coming soon.
