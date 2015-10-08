@@ -1,8 +1,8 @@
 {
   "name": "csa",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Route Planner on top of data published using Connections",
-  "main": "lib/SingleResultScanner.js",
+  "main": "lib/csa.js",
   "keywords": [
     "journey planning",
     "route planning",
@@ -10,13 +10,23 @@
     "public transport",
     "open transport"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/LinkedConnections/csa.js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/LinkedConnections/csa.js/issues"
+  },
   "scripts": {
-    "test": "mocha"
+    "test": "./node_modules/mocha/bin/mocha"
   },
   "author": "Pieter Colpaert",
   "license": "MIT",
   "devDependencies": {
     "async": "^1.2.1",
+    "mocha": "^2.3.3",
     "should": "^6.0.3"
+  },
+  "dependencies": {
   }
 }
