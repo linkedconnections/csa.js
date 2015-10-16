@@ -30,10 +30,15 @@ Deserialize.prototype._jsonToConnection = function (json) {
     object["@id"] = this._count;
     this._count ++;
   }
-  object["departureTime"] = new Date(object["st:departureTime"]);
-  object["arrivalTime"] = new Date(object["st:arrivalTime"]);
-  object["departureStop"] = object["st:departureStop"];
-  object["arrivalStop"] = object["st:arrivalStop"];
+  if (object["st:departureTime"]) {
+    object["departureTime"] = new Date(object["st:departureTime"]);
+    object["arrivalTime"] = new Date(object["st:arrivalTime"]);
+    object["departureStop"] = object["st:departureStop"];
+    object["arrivalStop"] = object["st:arrivalStop"];
+  } else {
+    object["departureTime"] = new Date(object["departureTime"]);
+    object["arrivalTime"] = new Date(object["arrivalTime"]);
+  }
   delete object["st:departureTime"];
   delete object["st:arrivalTime"];
   delete object["st:departureStop"];
