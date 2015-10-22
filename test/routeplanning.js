@@ -38,6 +38,9 @@ describe('Route planning queries', function () {
       var readStream = fs.createReadStream('test/data/test20131216.json.gz', {flags: 'r'});
       var result = readStream.pipe(zlib.createGunzip()).pipe(new Deserialize()).pipe(planner);
       it("should yield a result", function (done) {
+        result.on("data", function (data) {
+          //without something that's reading the data, the stream won't start
+        });
         result.on("result", function (path) {
           readStream.close();
           done();

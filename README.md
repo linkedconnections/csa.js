@@ -1,5 +1,6 @@
 # Connection Scan Algorithm for JavaScript
 [![Build Status](https://travis-ci.org/linkedconnections/csa.js.svg)](https://travis-ci.org/linkedconnections/csa.js)
+
 State: basic csa without footpaths is functional
 
 The Connection Scan Algorithm (CSA) for Javascript takes a stream of "connections" and transforms it into a stream of solutions to get from a certain stop to a certain stop. The algorithm will find the earliest arrival times first, and will return alternatives as long as the stream runs.
