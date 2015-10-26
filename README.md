@@ -1,7 +1,11 @@
 # Connection Scan Algorithm for JavaScript
 [![Build Status](https://travis-ci.org/linkedconnections/csa.js.svg)](https://travis-ci.org/linkedconnections/csa.js)
 
-State: basic csa without footpaths is functional
+State: 
+
+* basic csa without footpaths is functional
+
+* merger that combines different streams of connections is functional
 
 The Connection Scan Algorithm (CSA) for Javascript takes a stream of "connections" and transforms it into a stream of solutions to get from a certain stop to a certain stop. The algorithm will find the earliest arrival times first, and will return alternatives as long as the stream runs.
 
@@ -25,6 +29,29 @@ planner.on("result", function (result) {
 planner.on("data", function (connection) {
     //Access to a minimum spanning tree of connections being built up
     //May be useful for e.g., creating isochrone maps
+});
+```
+
+## Multiple connection streams
+
+Instead of using one stream of connections, you can combine multiple streams as input by using `MergeStream`
+```javascript
+var connectionsStreams = [
+	[ 'stream1', connectionsReadStream1 ],
+	[ 'stream2', connectionsReadStream2 ],
+	...
+];
+
+var connectionsReadStream = new csa.MergeStream(connectionsStreams, query.departureTime);
+```
+
+You can add/remove/stop/start streams by setting an eventlistener on the MergeStream instance
+```javascript
+connectionsReadStream.on("data", function (connection) {
+	connectionsReadStream.addConnectionsStream(['newStream'], newConnectionsReadStream]);
+	connectionsReadStream.removeConnectionsStream('stream2');
+	connectionsReadStream.stopConnectionsStream('newStream');
+	connectionsReadStream.startConnectionsStream('newStream');
 });
 ```
 
