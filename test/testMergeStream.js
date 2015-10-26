@@ -47,9 +47,7 @@ describe('MergeStream', function() {
 
       this._mergeStream.on('data', function (connection) {
         // console.error(connection);
-        if (connection['@context']) {
-          // do nothing with context
-        } else if (connection['departureTime'] >= self._departureTime) {
+        if (connection['departureTime'] >= self._departureTime) {
           // Update time tracker
           self._departureTime = connection['departureTime'];
           count++;
@@ -186,10 +184,8 @@ describe('Mergestream', function() {
       // Start merging NS
       if (!added && connection['departureTime'] >= threshold) {
         mergeStream.addConnectionsStream(connectionsStreamNS);
-        mergeStream.stopConnectionsStream('NMBS', function() {
-          // Callback to end readstream
-          connectionsStreams[0][1].end();
-        });
+        // Stop stream NMBS
+        connectionsStreams[0][1].end();
         added = true;
       }
     });
