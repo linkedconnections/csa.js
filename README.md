@@ -45,13 +45,13 @@ var connectionsStreams = [
 var connectionsReadStream = new csa.MergeStream(connectionsStreams, query.departureTime);
 ```
 
-You can add/remove/stop/start streams by setting an eventlistener on the MergeStream instance
+You can add/stop streams by setting an eventlistener on the MergeStream instance
 ```javascript
 connectionsReadStream.on("data", function (connection) {
 	connectionsReadStream.addConnectionsStream(['newStream'], newConnectionsReadStream]);
-	connectionsReadStream.removeConnectionsStream('stream2');
-	connectionsReadStream.stopConnectionsStream('newStream');
-	connectionsReadStream.startConnectionsStream('newStream');
+	connectionsReadStream.stopConnectionsStream('stream2', function() {
+		// End your readstream here
+	});
 });
 ```
 

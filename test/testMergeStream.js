@@ -174,8 +174,7 @@ describe('Mergestream', function() {
     arrivalStop : "asd" // Amsterdam
   };
 
-  it('should read NMBS first, but after treshold: stop reading NMBS and continue with NS', function (done) {
-    // MergeStream is paused by default so you can add/remove streams like you wish first
+  it('should read NMBS first, but after treshold: add NS and remove NMBS', function (done) {
     var mergeStream = new MergeStream(connectionsStreams, query.departureTime);
 
     var threshold = new Date("2015-10-10T07:00:00.000Z");
@@ -187,8 +186,10 @@ describe('Mergestream', function() {
       // Start merging NS
       if (!added && connection['departureTime'] >= threshold) {
         mergeStream.addConnectionsStream(connectionsStreamNS);
-        // mergeStream.stopConnectionsStream('NMBS');
-        mergeStream.removeConnectionsStream('NMBS');
+        mergeStream.stopConnectionsStream('NMBS', function() {
+          // Callback to end readstream
+          connectionsStreams[0][1].end();
+        });
         added = true;
       }
     });
