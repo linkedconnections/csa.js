@@ -49,7 +49,7 @@ You can add streams by setting an eventlistener on the MergeStream instance.
 To remove a stream, just end the stream itself.
 ```javascript
 connectionsReadStream.on("data", function (connection) {
-	connectionsReadStream.addConnectionsStream(['newStream'], newConnectionsReadStream]);
+	connectionsReadStream.addConnectionsStream('newStream', newConnectionsReadStream);
 });
 ```
 
