@@ -110,7 +110,7 @@ describe('Mergestream', function() {
     [ 'NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ]
   ];
 
-  var connectionsStreamNS = [ 'NS', fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ];
+  var connectionsStreamNS = fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize());
 
   var query = {
     // Intermodal route
@@ -132,7 +132,7 @@ describe('Mergestream', function() {
     mergeStream.on("data", function (connection) {
       // Start merging NS
       if (!added && connection['departureTime'] >= threshold) {
-        mergeStream.addConnectionsStream(connectionsStreamNS);
+        mergeStream.addConnectionsStream('NS', connectionsStreamNS);
         added = true;
       }
     });
@@ -162,7 +162,7 @@ describe('Mergestream', function() {
     [ 'NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ]
   ];
 
-  var connectionsStreamNS = [ 'NS', fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ];
+  var connectionsStreamNS = fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize());
 
   var query = {
     // Intermodal route
@@ -183,7 +183,7 @@ describe('Mergestream', function() {
     mergeStream.on("data", function (connection) {
       // Start merging NS
       if (!added && connection['departureTime'] >= threshold) {
-        mergeStream.addConnectionsStream(connectionsStreamNS);
+        mergeStream.addConnectionsStream('NS', connectionsStreamNS);
         // Stop stream NMBS
         connectionsStreams[0][1].end();
         added = true;
