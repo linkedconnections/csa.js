@@ -29,17 +29,31 @@ describe('Route planning queries', function () {
       departureTime : new Date("2013-12-16T00:00:00.000Z"),
       latestArrivalTime : new Date("2013-12-17T12:00:00.000Z"),
       arrivalStop : "stops:32831"//"stops:32842"//
+    },
+    {
+      //Minimum Spanning Tree
+      departureStop : "stops:32830",
+      departureTime : new Date("2013-12-16T00:00:00.000Z")
     }//,"stops:32830","stops:32831","stops:32832","stops:32833","stops:32834","stops:32835","stops:32836","stops:32837","stops:32838","stops:32839","stops:32840","stops:32841","stops:32842","stops:32843","stops:32844","stops:32845","stops:32846"
   ];
   async.eachSeries(queries, function (query, doneEntry) {
     //let's create our route planner
     var planner = new Planner(query);
-    describe(stations[query.departureStop].name + " (" + query.departureStop + ") to " + stations[query.arrivalStop].name + " (" + query.arrivalStop + ")", function () {
+    var ending = "";
+    if (query.arrivalStop) {
+       ending += "to " + stations[query.arrivalStop].name + " (" + query.arrivalStop + ")";
+    }
+    describe(stations[query.departureStop].name + " (" + query.departureStop + ") " + ending, function () {
       var readStream = fs.createReadStream('test/data/test20131216.json.gz', {flags: 'r'});
       var result = readStream.pipe(zlib.createGunzip()).pipe(new Deserialize()).pipe(planner);
       it("should yield a result", function (done) {
+        var stations = [];
         result.on("data", function (data) {
-          //without something that's reading the data, the stream won't start
+          //It should never give two times the same arrivalStop!
+          if (stations.indexOf(data.arrivalStop) > -1) {
+            done('Received two times a connection with arrival stop: ' + data.arrivalStop);
+          }
+          stations.push(data.arrivalStop);
         });
         result.on("result", function (path) {
           done();
@@ -52,7 +66,11 @@ describe('Route planning queries', function () {
           doneEntry();
         });
         result.on("end", function () {
-          done("no path found");
+          if (query.arrivalStop) {
+            done("no path found");
+          } else {
+            done();
+          }
           doneEntry();
         });
       });
