@@ -42,9 +42,10 @@ describe('Route planning queries', function () {
           //without something that's reading the data, the stream won't start
         });
         result.on("result", function (path) {
-          readStream.close();
           done();
           doneEntry();
+          readStream.destroy();
+          result.destroy();
         });
         result.on("error", function (error) {
           done("error encountered" + error);

@@ -1,6 +1,6 @@
 {
   "name": "csa",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Route Planner on top of data published using Connections",
   "main": "lib/csa.js",
   "keywords": [
@@ -28,5 +28,6 @@
     "should": "^6.0.3"
   },
   "dependencies": {
+    "js-priority-queue": "^0.1.3"
   }
 }
