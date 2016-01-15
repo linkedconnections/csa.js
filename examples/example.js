@@ -36,6 +36,10 @@ try {
     }
   });
 
+  planner.on("data", function (mstConnection) {
+    console.error(mstConnection);
+  });
+
   planner.on("stop_condition", function (count) {
     console.error("Reached stop condition after relaxing " + count + " connections.");
   });

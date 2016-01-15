@@ -47,13 +47,13 @@ describe('Route planning queries', function () {
       var readStream = fs.createReadStream('test/data/test20131216.json.gz', {flags: 'r'});
       var result = readStream.pipe(zlib.createGunzip()).pipe(new Deserialize()).pipe(planner);
       it("should yield a result", function (done) {
-        var stations = [];
+        var mst = {};
         result.on("data", function (data) {
           //It should never give two times the same arrivalStop!
-          if (stations.indexOf(data.arrivalStop) > -1) {
-            done('Received two times a connection with arrival stop: ' + data.arrivalStop);
+          if (mst[data.arrivalStop]) {
+            done('Received two times a connection with arrival stop: ' + stations[data.arrivalStop].name + " - " + data.arrivalStop);
           }
-          stations.push(data.arrivalStop);
+          mst[data.arrivalStop] = data;
         });
         result.on("result", function (path) {
           done();
