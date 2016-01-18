@@ -1,6 +1,6 @@
 {
   "name": "csa",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Route Planner on top of data published using Connections",
   "main": "lib/csa.js",
   "keywords": [
