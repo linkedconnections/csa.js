@@ -53,4 +53,30 @@ connectionsReadStream.on("data", function (connection) {
 });
 ```
 
+## Transfer times (optionally)
+To specify the minimum transfer time you should add the ''minimumTransferTime'' argument to the query:
+```javascript
+var query = {
+	"arrivalStop":"..." , 
+	"departureStop": "...", 
+	"departureTime": "...",
+	"minimumTransferTime": ...
+}
+var planner = new csa.BasicCSA(query);
+```
+
+To specify transfer times depending on the stops of the transfers you should create a transfer time fetcher:
+```javascript
+//Define a class
+var transferTimesFetcher = function() {};
+//Define the get function
+transferTimesFetcher.get = function (previousConnection, connection) {
+	return new Promise(function (fulfill) {
+		var transferTime = ...
+		fulfill(transferTime)
+        });
+};
+var planner = new csa.BasicCSA(query,transferTimesFetcher);
+```
+
 _Protip: you can use browserify on this repo to use CSA in the browser_
