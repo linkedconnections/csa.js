@@ -5,6 +5,8 @@ State:
 
 * basic csa without footpaths is functional
 
+* timespan csa without footpaths is functional
+
 * merger that combines different streams of connections is functional
 
 The Connection Scan Algorithm (CSA) for Javascript takes a stream of "connections" and transforms it into a stream of solutions to get from a certain stop to a certain stop. The algorithm will find the earliest arrival times first, and will return alternatives as long as the stream runs.
@@ -50,6 +52,30 @@ To remove a stream, just end the stream itself.
 ```javascript
 connectionsReadStream.on("data", function (connection) {
 	connectionsReadStream.addConnectionsStream('newStream', newConnectionsReadStream);
+});
+```
+
+## Timespan CSA
+
+An expansion on basic csa is timespan csa, this creates an array of minimum spanning trees to create every possible route from a depart to destination within a certain departure timespan. (starting at departureTime to latestDepartTime)
+```javascript
+var csa = require('csa');
+var planner = new csa.TimespanCSA({
+	"departureStop": "...", 
+	"arrivalStop": "...",
+	"departureTime": new Date(),
+	"latestDepartTime": new Date(new Date().valueOf() + 720000),
+	"minimumTransferTime": 6 * 60
+});
+connectionsReadStream.pipe(planner);
+planner.on("result", function (result) {
+	// This gets emitted for every found route
+    console.log("Path found:",result);
+    connectionsReadStream.close();
+});
+planner.on("data", function (connection) {
+    // Access to a minimum spanning tree of connections being built up
+    // May be useful for e.g., creating isochrone maps
 });
 ```
 
