@@ -30,6 +30,7 @@
   "dependencies": {
     "js-priority-queue": "^0.1.5",
     "jsonld": "^1.1.0",
+    "ldfetch": "^1.0.9-alpha",
     "promise": "^7.3.1"
   }
 }
