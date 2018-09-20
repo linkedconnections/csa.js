@@ -1,0 +1,13 @@
+image: node:8.11.3
+
+stages:
+        - deploy
+
+try_build:
+        stage: deploy
+        script:
+                - npm install
+                - npm install typescript -g
+                - tsc src/*.ts --lib ES2015
+
+
