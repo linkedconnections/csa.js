@@ -2,6 +2,8 @@ language: node_js
 node_js:
         - node
         - lts/*
+install:
+	- npm install csa.js/ldtree-browser/package.json # Install deps for ldtree-browser, may be removed if NPM package
 env:
  - CXX=g++-4.9 # https://github.com/digitalbazaar/jsonld.js/issues/254
 addons:
