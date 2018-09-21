@@ -1,4 +1,18 @@
 language: node_js
 node_js:
-  - "4.1"
-  - "4.0"
+        - node
+        - lts/*
+env:
+ - CXX=g++-4.9 # https://github.com/digitalbazaar/jsonld.js/issues/254
+addons:
+ apt:
+  sources:
+   - ubuntu-toolchain-r-test
+  packages:
+   - g++-4.9
+
+before_install:
+  - echo "Installing ldtree-browser deps, remove this when ldtree-browser is available through NPM"
+  - cd ldtree-browser
+  - npm install
+  - cd ..

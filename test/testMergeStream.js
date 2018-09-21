@@ -1,16 +1,16 @@
 var assert = require("assert"),
-    fs = require('fs'),
-    Deserialize = require('./data/Deserialize.js'),
-    MergeStream = require('../lib/csa.js').MergeStream,
-    Planner = require('../lib/csa.js').BasicCSA;
+  fs = require('fs'),
+  Deserialize = require('./data/Deserialize.js'),
+  MergeStream = require('../lib/csa.js').MergeStream,
+  Planner = require('../lib/csa.js').BasicCSA;
 
-describe('connectionsStream', function() {
-  it('should return connections ordered by their departure time', function(done) {
+describe('connectionsStream', function () {
+  it('should return connections ordered by their departure time', function (done) {
     var self = this;
     var count = 0;
 
-    var connectionsStream = fs.createReadStream('test/data/connections-nmbs.jsonldstream', {flags: 'r'}).pipe(new Deserialize());
-    connectionsStream.on('data', function(connection) {
+    var connectionsStream = fs.createReadStream('test/data/connections-nmbs.jsonldstream', { flags: 'r' }).pipe(new Deserialize());
+    connectionsStream.on('data', function (connection) {
       // Check if connections are ordered
       if (!self._departureTime) {
         self._departureTime = connection['departureTime']; // First connection departure time is minimum
@@ -23,18 +23,18 @@ describe('connectionsStream', function() {
       count++;
     });
 
-    connectionsStream.on('end', function() {
+    connectionsStream.on('end', function () {
       assert.equal(count, 74);
       done();
     });
   });
 });
 
-describe('MergeStream', function() {
+describe('MergeStream', function () {
   // ConnectionsStreams are supposed to be ordered already
   var connectionsStreams = [
-    [ 'NS', fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ],
-    [ 'NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ]
+    ['NS', fs.createReadStream('test/data/connections-ns.jsonldstream', { flags: 'r' }).pipe(new Deserialize())],
+    ['NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', { flags: 'r' }).pipe(new Deserialize())]
   ];
 
   describe('#read()', function () {
@@ -57,7 +57,7 @@ describe('MergeStream', function() {
         }
       });
 
-      this._mergeStream.on('end', function() {
+      this._mergeStream.on('end', function () {
         assert.equal(count, 72);
         done();
       });
@@ -65,59 +65,63 @@ describe('MergeStream', function() {
   });
 });
 
-describe('CSA', function() {
+describe('CSA', function () {
   // ConnectionsStreams are supposed to be ordered already
   var connectionsStreams = [
-    [ 'NS', fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ],
-    [ 'NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ]
+    ['NS', fs.createReadStream('test/data/connections-ns.jsonldstream', { flags: 'r' }).pipe(new Deserialize())],
+    ['NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', { flags: 'r' }).pipe(new Deserialize())]
   ];
 
   var query = {
     // Intermodal route
-    departureStop : "8814159", // Bruxelles-Midi
-    departureTime : new Date("2015-10-10T00:00:00.000Z"),
-    latestArrivalTime : new Date("2015-10-11T07:10:00.000Z"),
-    arrivalStop : "asd" // Amsterdam
+    departureStop: "8814159", // Bruxelles-Midi
+    departureTime: new Date("2015-10-10T00:00:00.000Z"),
+    latestArrivalTime: new Date("2015-10-11T07:10:00.000Z"),
+    arrivalStop: "asd" // Amsterdam
   };
 
   it('should return an intermodal route', function (done) {
     var mergeStream = new MergeStream(connectionsStreams, query.departureTime);
-    var planner = new Planner(query);
-    var result = mergeStream.pipe(planner);
+    let walkingSpeed = 5.0;
+    let stopsData = [];
+    new Planner(query, undefined, walkingSpeed, stopsData).then((instance) => {
+      var planner = instance;
+      var result = mergeStream.pipe(planner);
 
-    result.on("data", function (data) {
-      //without something that's reading the data, the stream won't start
-    });
-    result.on("result", function (path) {
-      mergeStream.close();
-      done();
-      doneEntry();
-    });
-    result.on("error", function (error) {
-      done("error encountered" + error);
-      doneEntry();
-    });
-    result.on("end", function () {
-      done("no path found");
-      doneEntry();
+      result.on("data", function (data) {
+        //without something that's reading the data, the stream won't start
+      });
+      result.on("result", function (path) {
+        mergeStream.close();
+        done();
+        doneEntry();
+      });
+      result.on("error", function (error) {
+        done("error encountered" + error);
+        doneEntry();
+      });
+      result.on("end", function () {
+        done("no path found");
+        doneEntry();
+      });
     });
   });
 });
 
-describe('Mergestream', function() {
+describe('Mergestream', function () {
   // ConnectionsStreams are supposed to be ordered already
   var connectionsStreams = [
-    [ 'NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ]
+    ['NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', { flags: 'r' }).pipe(new Deserialize())]
   ];
 
-  var connectionsStreamNS = fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize());
+  var connectionsStreamNS = fs.createReadStream('test/data/connections-ns.jsonldstream', { flags: 'r' }).pipe(new Deserialize());
 
   var query = {
     // Intermodal route
-    departureStop : "8814159", // Bruxelles-Midi
-    departureTime : new Date("2015-10-10T00:00:00.000Z"),
-    latestArrivalTime : new Date("2015-10-11T07:10:00.000Z"),
-    arrivalStop : "asd" // Amsterdam
+    departureStop: "8814159", // Bruxelles-Midi
+    departureTime: new Date("2015-10-10T00:00:00.000Z"),
+    latestArrivalTime: new Date("2015-10-11T07:10:00.000Z"),
+    arrivalStop: "asd" // Amsterdam
   };
 
   it('should read NMBS first and after time treshold also NS', function (done) {
@@ -125,86 +129,94 @@ describe('Mergestream', function() {
     var mergeStream = new MergeStream(connectionsStreams, query.departureTime);
 
     var threshold = new Date("2015-10-10T07:00:00.000Z");
-    var planner = new Planner(query);
-    var result = mergeStream.pipe(planner);
-    var added = false;
+    let walkingSpeed = 5.0;
+    let stopsData = [];
+    new Planner(query, undefined, walkingSpeed, stopsData).then((instance) => {
+      var planner = instance;
+      var result = mergeStream.pipe(planner);
+      var added = false;
 
-    mergeStream.on("data", function (connection) {
-      // Start merging NS
-      if (!added && connection['departureTime'] >= threshold) {
-        mergeStream.addConnectionsStream('NS', connectionsStreamNS);
-        added = true;
-      }
-    });
+      mergeStream.on("data", function (connection) {
+        // Start merging NS
+        if (!added && connection['departureTime'] >= threshold) {
+          mergeStream.addConnectionsStream('NS', connectionsStreamNS);
+          added = true;
+        }
+      });
 
-    result.on("data", function (connection) {
-      //without something that's reading the data, the stream won't start
-    });
-    result.on("result", function (path) {
-      mergeStream.close();
-      done();
-      doneEntry();
-    });
-    result.on("error", function (error) {
-      done("error encountered" + error);
-      doneEntry();
-    });
-    result.on("end", function () {
-      done("no path found");
-      doneEntry();
+      result.on("data", function (connection) {
+        //without something that's reading the data, the stream won't start
+      });
+      result.on("result", function (path) {
+        mergeStream.close();
+        done();
+        doneEntry();
+      });
+      result.on("error", function (error) {
+        done("error encountered" + error);
+        doneEntry();
+      });
+      result.on("end", function () {
+        done("no path found");
+        doneEntry();
+      });
     });
   });
 });
 
-describe('Mergestream', function() {
+describe('Mergestream', function () {
   // ConnectionsStreams are supposed to be ordered already
   var connectionsStreams = [
-    [ 'NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', {flags: 'r'}).pipe(new Deserialize()) ]
+    ['NMBS', fs.createReadStream('test/data/connections-nmbs.jsonldstream', { flags: 'r' }).pipe(new Deserialize())]
   ];
 
-  var connectionsStreamNS = fs.createReadStream('test/data/connections-ns.jsonldstream', {flags: 'r'}).pipe(new Deserialize());
+  var connectionsStreamNS = fs.createReadStream('test/data/connections-ns.jsonldstream', { flags: 'r' }).pipe(new Deserialize());
 
   var query = {
     // Intermodal route
-    departureStop : "8814159", // Bruxelles-Midi
-    departureTime : new Date("2015-10-10T00:00:00.000Z"),
-    latestArrivalTime : new Date("2015-10-11T07:10:00.000Z"),
-    arrivalStop : "asd" // Amsterdam
+    departureStop: "8814159", // Bruxelles-Midi
+    departureTime: new Date("2015-10-10T00:00:00.000Z"),
+    latestArrivalTime: new Date("2015-10-11T07:10:00.000Z"),
+    arrivalStop: "asd" // Amsterdam
   };
 
   it('should read NMBS first, but after treshold: add NS and remove NMBS', function (done) {
     var mergeStream = new MergeStream(connectionsStreams, query.departureTime);
 
     var threshold = new Date("2015-10-10T07:00:00.000Z");
-    var planner = new Planner(query);
-    var result = mergeStream.pipe(planner);
-    var added = false;
+    let walkingSpeed = 5.0;
+    let stopsData = [];
+    new Planner(query, undefined, walkingSpeed, stopsData).then((instance) => {
+      var planner = instance;
+      var result = mergeStream.pipe(planner);
+      var added = false;
 
-    mergeStream.on("data", function (connection) {
-      // Start merging NS
-      if (!added && connection['departureTime'] >= threshold) {
-        mergeStream.addConnectionsStream('NS', connectionsStreamNS);
-        // Stop stream NMBS
-        connectionsStreams[0][1].end();
-        added = true;
-      }
-    });
+      mergeStream.on("data", function (connection) {
+        // Start merging NS
+        if (!added && connection['departureTime'] >= threshold) {
+          mergeStream.addConnectionsStream('NS', connectionsStreamNS);
+          // Stop stream NMBS
+          connectionsStreams[0][1].end();
+          added = true;
+        }
+      });
 
-    result.on("data", function (connection) {
-      //without something that's reading the data, the stream won't start
-    });
-    result.on("result", function (path) {
-      mergeStream.close();
-      done();
-      doneEntry();
-    });
-    result.on("error", function (error) {
-      done("error encountered" + error);
-      doneEntry();
-    });
-    result.on("end", function () {
-      done("no path found");
-      doneEntry();
+      result.on("data", function (connection) {
+        //without something that's reading the data, the stream won't start
+      });
+      result.on("result", function (path) {
+        mergeStream.close();
+        done();
+        doneEntry();
+      });
+      result.on("error", function (error) {
+        done("error encountered" + error);
+        doneEntry();
+      });
+      result.on("end", function () {
+        done("no path found");
+        doneEntry();
+      });
     });
   });
 });

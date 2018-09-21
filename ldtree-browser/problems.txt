@@ -1,0 +1,5 @@
+TreeCache loads all incoming triples, and saves them in the cache on id.
+Every temporary id's such as 'https://example.org/ex#_:b12' is saved as a seperate id in the cache.
+No however when a child node from a different fragment containing only the value is passed,
+it will be seen as a node that is fully loaded into the cache.
+Since a node object needs to be returned to use the value,
