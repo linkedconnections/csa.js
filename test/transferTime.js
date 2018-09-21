@@ -52,7 +52,7 @@ describe('Test minimum transfer time', function () {
                         mst[data.arrivalStop] = data;
                     });
                     result.on("result", function (path) {
-                        done();
+                        //done();
                         doneEntry();
                         readStream.destroy();
                         result.destroy();
@@ -128,8 +128,7 @@ describe('Test transfer time fetcher', function () {
                         mst[data.arrivalStop] = data;
                     });
                     result.on("result", function (path) {
-                        console.warn("route found")
-                        done();
+                        //done();
                         doneEntry();
                         readStream.destroy();
                         result.destroy();
