@@ -54,9 +54,12 @@ describe('Test minimum transfer time', function () {
                     result.on("result", function (path) {
                         doneTest();
                         doneEntry();
-                        readStream.destroy();
-                        result.destroy();
+                        
+                        //result.destroy();
                     });
+                    result.on("finished", function() {
+                        readStream.destroy();
+                    })
                     result.on("error", function (error) {
                         doneTest("error encountered" + error);
                         doneEntry();
@@ -130,8 +133,11 @@ describe('Test transfer time fetcher', function () {
                     result.on("result", function (path) {
                         doneTest();
                         doneEntry();
+                        
+                        //result.destroy();
+                    });
+                    result.on("finished", function(){
                         readStream.destroy();
-                        result.destroy();
                     });
                     result.on("error", function (error) {
                         doneTest("error encountered" + error);
