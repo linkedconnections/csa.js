@@ -37,7 +37,7 @@ describe('Test minimum transfer time', function () {
             describe(query.departureStop + ending, function () {
                 var readStream = fs.createReadStream('test/data/nmbs20151001_20151002.json.gz', { flags: 'r' });
                 var result = readStream.pipe(zlib.createGunzip()).pipe(new Deserialize()).pipe(planner);
-                it("should yield a result and respect minimum transfertimes", function (done) {
+                it("should yield a result and respect minimum transfertimes", function (doneTest) {
                     var mst = {};
                     result.on("data", function (data) {
                         //It should never give two times the same arrivalStop!
@@ -45,20 +45,20 @@ describe('Test minimum transfer time', function () {
                             if (!(mst[data["departureStop"]]["gtfs:trip"] == data["gtfs:trip"])) {
                                 var transferTime = (data["arrivalTime"].getTime() - mst[data["departureStop"]]["arrivalTime"].getTime()) / 1000;
                                 if (transferTime < minimumTransferTime) {
-                                    done('Minimum transfertime exceeded at transfer: ' + mst[data["departureStop"]].departureStop + " -> " + data.departureStop + " - " + transferTime);
+                                    doneTest('Minimum transfertime exceeded at transfer: ' + mst[data["departureStop"]].departureStop + " -> " + data.departureStop + " - " + transferTime);
                                 }
                             }
                         }
                         mst[data.arrivalStop] = data;
                     });
                     result.on("result", function (path) {
-                        //done();
+                        doneTest();
                         doneEntry();
                         readStream.destroy();
                         result.destroy();
                     });
                     result.on("error", function (error) {
-                        done("error encountered" + error);
+                        doneTest("error encountered" + error);
                         doneEntry();
                     });
                 });
@@ -113,7 +113,7 @@ describe('Test transfer time fetcher', function () {
             describe(query.departureStop + ending, function () {
                 var readStream = fs.createReadStream('test/data/nmbs20151001_20151002.json.gz', { flags: 'r' });
                 var result = readStream.pipe(zlib.createGunzip()).pipe(new Deserialize()).pipe(planner);
-                it("should yield a result and respect transfertimes from fetcher", function (done) {
+                it("should yield a result and respect transfertimes from fetcher", function (doneTest) {
                     var mst = {};
                     result.on("data", function (data) {
                         //It should never give two times the same arrivalStop!
@@ -121,20 +121,20 @@ describe('Test transfer time fetcher', function () {
                             if (!(mst[data["departureStop"]]["gtfs:trip"] == data["gtfs:trip"])) {
                                 var transferTime = (data["arrivalTime"].getTime() - mst[data["departureStop"]]["arrivalTime"].getTime()) / 1000;
                                 if (transferTime < getTransferTimes(mst[data["departureStop"]], data)) {
-                                    done('Minimum transfertime exceeded at transfer: ' + mst[data["departureStop"]].departureStop + " -> " + data.departureStop + " - " + transferTime);
+                                    doneTest('Minimum transfertime exceeded at transfer: ' + mst[data["departureStop"]].departureStop + " -> " + data.departureStop + " - " + transferTime);
                                 }
                             }
                         }
                         mst[data.arrivalStop] = data;
                     });
                     result.on("result", function (path) {
-                        //done();
+                        doneTest();
                         doneEntry();
                         readStream.destroy();
                         result.destroy();
                     });
                     result.on("error", function (error) {
-                        done("error encountered" + error);
+                        doneTest("error encountered" + error);
                         doneEntry();
                     });
                 });
