@@ -13,5 +13,4 @@ addons:
 
 before_install:
   - echo "Installing ldtree-browser deps, remove this when ldtree-browser is available through NPM"
-  - ls
-  - npm install csa.js/ldtree-browser/package.json
+  - npm install ldtree-browser/package.json
